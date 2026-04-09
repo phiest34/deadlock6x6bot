@@ -6,6 +6,7 @@
     "author": "deadbot",
     "version": "0.0.1",
     "minimum-overwolf-version": "0.250.0",
+    "minimum-gep-version": "0.250.0",
     "description": "Deadlock overlay and bridge client for Deadbot.",
     "dock_button_title": "Deadbot Overlay",
     "icon": "assets/icon.png"
@@ -20,6 +21,12 @@
   ],
   "data": {
     "start_window": "background",
+    "open_dev_tools": true,
+    "developer": {
+      "enable_auto_refresh": true,
+      "reload_delay": 1200,
+      "filter": "*.json;*.html;*.js;*.css"
+    },
     "game_targeting": {
       "type": "dedicated",
       "game_ids": [
@@ -27,18 +34,18 @@
       ]
     }
   },
+  "game_events": [
+    37786
+  ],
   "windows": {
     "background": {
       "file": "windows/background/background.html",
+      "is_background_page": true,
       "desktop_only": true,
       "native_window": false,
       "transparent": true,
       "show_in_taskbar": false,
-      "resizable": false,
-      "size": {
-        "width": 420,
-        "height": 560
-      }
+      "resizable": false
     },
     "overlay": {
       "file": "windows/overlay/overlay.html",
