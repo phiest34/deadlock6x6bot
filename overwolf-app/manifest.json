@@ -30,7 +30,7 @@
     "game_targeting": {
       "type": "dedicated",
       "game_ids": [
-        37786
+        244821
       ]
     },
     "windows": {
@@ -75,7 +75,7 @@
     }
   },
   "game_events": [
-    37786
+    244821
   ],
   "hotkeys": {
     "toggle_overlay": {
