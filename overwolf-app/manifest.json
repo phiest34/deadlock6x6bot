@@ -32,51 +32,51 @@
       "game_ids": [
         37786
       ]
+    },
+    "windows": {
+      "background": {
+        "file": "windows/background/background.html",
+        "is_background_page": true,
+        "desktop_only": true,
+        "native_window": false,
+        "transparent": true,
+        "show_in_taskbar": false,
+        "resizable": false
+      },
+      "overlay": {
+        "file": "windows/overlay/overlay.html",
+        "in_game_only": true,
+        "native_window": false,
+        "transparent": true,
+        "resizable": true,
+        "grab_keyboard_focus": false,
+        "show_in_taskbar": false,
+        "size": {
+          "width": 320,
+          "height": 180
+        },
+        "position": {
+          "top": 140,
+          "left": 24
+        }
+      },
+      "desktop": {
+        "file": "windows/desktop/desktop.html",
+        "desktop_only": true,
+        "native_window": true,
+        "transparent": false,
+        "resizable": true,
+        "show_in_taskbar": true,
+        "size": {
+          "width": 980,
+          "height": 720
+        }
+      }
     }
   },
   "game_events": [
     37786
   ],
-  "windows": {
-    "background": {
-      "file": "windows/background/background.html",
-      "is_background_page": true,
-      "desktop_only": true,
-      "native_window": false,
-      "transparent": true,
-      "show_in_taskbar": false,
-      "resizable": false
-    },
-    "overlay": {
-      "file": "windows/overlay/overlay.html",
-      "in_game_only": true,
-      "native_window": false,
-      "transparent": true,
-      "resizable": true,
-      "grab_keyboard_focus": false,
-      "show_in_taskbar": false,
-      "size": {
-        "width": 320,
-        "height": 180
-      },
-      "position": {
-        "top": 140,
-        "left": 24
-      }
-    },
-    "desktop": {
-      "file": "windows/desktop/desktop.html",
-      "desktop_only": true,
-      "native_window": true,
-      "transparent": false,
-      "resizable": true,
-      "show_in_taskbar": true,
-      "size": {
-        "width": 980,
-        "height": 720
-      }
-    }
-  },
   "hotkeys": {
     "toggle_overlay": {
       "title": "Toggle Overlay",
