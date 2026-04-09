@@ -4,6 +4,7 @@
   var REQUIRED_FEATURES = ["game_info", "match_info"];
   var BRIDGE_BASE_URL = "http://127.0.0.1:8765";
   var GAME_INFO_POLL_INTERVAL_MS = 5000;
+  var FEATURE_RETRY_INTERVAL_MS = 4000;
   var state = {
     phase: null,
     gameMode: null,
@@ -23,8 +24,10 @@
     lastNewEvents: null,
     lastSnapshot: null,
     lastBridgeError: null,
+    lastFeatureRequestAttemptAt: null,
     updatedAt: new Date().toISOString()
   };
+  var featureRetryTimerId = null;
 
   function log(message, data) {
     if (typeof data === "undefined") {
@@ -193,11 +196,31 @@
   }
 
   function requestFeatures() {
+    window.deadbotDebugState.lastFeatureRequestAttemptAt = new Date().toISOString();
     overwolf.games.events.setRequiredFeatures(REQUIRED_FEATURES, function (result) {
       window.deadbotDebugState.requestedFeatures = result;
       window.deadbotDebugState.updatedAt = new Date().toISOString();
       log("Requested features", result);
     });
+  }
+
+  function ensureFeatureRetryLoop() {
+    if (featureRetryTimerId !== null) {
+      return;
+    }
+
+    featureRetryTimerId = window.setInterval(function () {
+      requestFeatures();
+    }, FEATURE_RETRY_INTERVAL_MS);
+  }
+
+  function stopFeatureRetryLoop() {
+    if (featureRetryTimerId === null) {
+      return;
+    }
+
+    window.clearInterval(featureRetryTimerId);
+    featureRetryTimerId = null;
   }
 
   function pollRunningGameInfo() {
@@ -218,6 +241,7 @@
       window.deadbotDebugState.lastInfoUpdate = event;
       window.deadbotDebugState.updatedAt = new Date().toISOString();
       log("Info update", event);
+      stopFeatureRetryLoop();
       applyInfoUpdates(event.info && event.info.update ? event.info.update : []);
     });
 
@@ -239,6 +263,10 @@
       window.deadbotDebugState.lastGameInfoUpdate = event;
       window.deadbotDebugState.updatedAt = new Date().toISOString();
       log("Game info updated", event);
+      if (event && event.gameInfo && event.gameInfo.isRunning) {
+        requestFeatures();
+        ensureFeatureRetryLoop();
+      }
     });
   }
 
