@@ -62,6 +62,19 @@
     });
   }
 
+  function restoreDeclaredWindow(name) {
+    overwolf.windows.obtainDeclaredWindow(name, function (result) {
+      if (!result.success || !result.window) {
+        log("Failed to obtain window", { name: name, result: result });
+        return;
+      }
+
+      overwolf.windows.restore(result.window.id, function (restoreResult) {
+        log("Restore window result", { name: name, result: restoreResult });
+      });
+    });
+  }
+
   function emitSnapshot() {
     var snapshot = window.deadlockEvents.buildSnapshot(state);
     sendToOverlay(snapshot);
@@ -174,6 +187,7 @@
   }
 
   function init() {
+    restoreDeclaredWindow("desktop");
     registerHotkey();
     registerListeners();
     requestFeatures();
