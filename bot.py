@@ -10,9 +10,9 @@ from telegram import Update
 from telegram.ext import Application, CommandHandler, ContextTypes
 
 from deadlock_data import GENERAL_TIPS, HEROES
+from storage import FriendRepository, create_friend_repository
 from steam_monitor import (
     DeadlockApiClient,
-    FriendStore,
     SteamApiClient,
     format_friend_status,
     format_transition_message,
@@ -152,7 +152,7 @@ async def helpme(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await update.message.reply_text(message)
 
 
-def get_store(context: ContextTypes.DEFAULT_TYPE) -> FriendStore:
+def get_store(context: ContextTypes.DEFAULT_TYPE) -> FriendRepository:
     return context.application.bot_data["friend_store"]
 
 
@@ -642,7 +642,7 @@ async def check(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 async def monitor_loop(application: Application) -> None:
     config: BotConfig = application.bot_data["config"]
-    store: FriendStore = application.bot_data["friend_store"]
+    store: FriendRepository = application.bot_data["friend_store"]
     steam_client: Optional[SteamApiClient] = application.bot_data.get("steam_client")
 
     if not steam_client:
@@ -706,13 +706,14 @@ def main() -> None:
         )
     steam_api_key = os.getenv("STEAM_API_KEY")
     poll_interval_seconds = int(os.getenv("STEAM_POLL_INTERVAL_SECONDS", DEFAULT_POLL_INTERVAL))
+    storage_backend = os.getenv("STORAGE_BACKEND", "sqlite")
     database_path = os.getenv("DATABASE_PATH", "deadbot.sqlite3")
 
     config = BotConfig(
         steam_api_key=steam_api_key,
         poll_interval_seconds=max(15, poll_interval_seconds),
     )
-    store = FriendStore(database_path)
+    store = create_friend_repository(storage_backend, database_path)
 
     application = (
         Application.builder()

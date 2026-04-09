@@ -87,6 +87,32 @@ Overwolf-приложение не должно знать детали `Telegra
 - переиспользовать текущие модули, связанные с `SteamID`, профилями и хранением статуса
 - добавить отдельный ingestion path для live-событий из `Overwolf`
 
+## Current Status
+
+- базовый каркас `Overwolf Native` app уже создан в `overwolf-app/`
+- локальный `Python bridge` уже создан в `bridge/server.py`
+- базовый путь `Overwolf -> localhost bridge -> bot` подготовлен
+- инструкция локального запуска на `Windows` записана в `docs/windows-overwolf-local-run.md`
+
+## External Dependency
+
+На текущем этапе есть внешний блокер:
+
+- заявка на `Overwolf developer access / developer whitelist` уже отправлена для аккаунта `@nur-14`
+- ожидаемое время ожидания ответа: до `2` дней
+- до одобрения аккаунта нельзя надежно пройти `Phase 0`, потому что `Overwolf` не дает загрузить `unpacked extension` и показывает `Unauthorized App / unauthorized source`
+
+## Active Blocker
+
+`Phase 0` частично заблокирован до получения `developer access` от `Overwolf`.
+
+Что можно делать параллельно, пока идет ожидание:
+
+- дорабатывать `bridge`
+- готовить bot ingestion
+- улучшать UI overlay
+- фиксировать manifest/runtime issues, не требующие запуска в `Overwolf`
+
 ## Development Phases
 
 ## Phase 0. Research Spike
@@ -98,6 +124,7 @@ Overwolf-приложение не должно знать детали `Telegra
 ### Tasks
 
 - создать минимальное `Overwolf` test app
+- дождаться `Overwolf developer whitelist` для аккаунта `@nur-14`
 - подписаться на:
   - `game_info`
   - `match_info`
