@@ -76,11 +76,11 @@
         "grab_keyboard_focus": false,
         "show_in_taskbar": false,
         "size": {
-          "width": 320,
-          "height": 180
+          "width": 260,
+          "height": 140
         },
         "position": {
-          "top": 140,
+          "top": 24,
           "left": 24
         }
       },

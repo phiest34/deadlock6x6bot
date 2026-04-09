@@ -15,6 +15,16 @@
     timerStartedAt: null,
     lastEvent: null
   };
+  window.deadbotDebugState = {
+    requestedFeatures: null,
+    runningGameInfo: null,
+    lastGameInfoUpdate: null,
+    lastInfoUpdate: null,
+    lastNewEvents: null,
+    lastSnapshot: null,
+    lastBridgeError: null,
+    updatedAt: new Date().toISOString()
+  };
 
   function log(message, data) {
     if (typeof data === "undefined") {
@@ -74,6 +84,11 @@
       },
       body: JSON.stringify(payload)
     }).catch(function (error) {
+      window.deadbotDebugState.lastBridgeError = {
+        path: path,
+        message: String(error),
+        updatedAt: new Date().toISOString()
+      };
       log("Bridge request failed", error);
     });
   }
@@ -93,7 +108,8 @@
 
   function emitSnapshot() {
     var snapshot = window.deadlockEvents.buildSnapshot(state);
-    sendToOverlay(snapshot);
+    window.deadbotDebugState.lastSnapshot = snapshot;
+    window.deadbotDebugState.updatedAt = new Date().toISOString();
     postJson("/snapshot", snapshot);
   }
 
@@ -178,6 +194,8 @@
 
   function requestFeatures() {
     overwolf.games.events.setRequiredFeatures(REQUIRED_FEATURES, function (result) {
+      window.deadbotDebugState.requestedFeatures = result;
+      window.deadbotDebugState.updatedAt = new Date().toISOString();
       log("Requested features", result);
     });
   }
@@ -189,17 +207,23 @@
     }
 
     overwolf.games.getRunningGameInfo(function (result) {
+      window.deadbotDebugState.runningGameInfo = result;
+      window.deadbotDebugState.updatedAt = new Date().toISOString();
       log("Running game info", result);
     });
   }
 
   function registerListeners() {
     overwolf.games.events.onInfoUpdates2.addListener(function (event) {
+      window.deadbotDebugState.lastInfoUpdate = event;
+      window.deadbotDebugState.updatedAt = new Date().toISOString();
       log("Info update", event);
       applyInfoUpdates(event.info && event.info.update ? event.info.update : []);
     });
 
     overwolf.games.events.onNewEvents.addListener(function (event) {
+      window.deadbotDebugState.lastNewEvents = event;
+      window.deadbotDebugState.updatedAt = new Date().toISOString();
       log("New events", event);
 
       if (!event || !Array.isArray(event.events)) {
@@ -212,12 +236,9 @@
     });
 
     overwolf.games.onGameInfoUpdated.addListener(function (event) {
+      window.deadbotDebugState.lastGameInfoUpdate = event;
+      window.deadbotDebugState.updatedAt = new Date().toISOString();
       log("Game info updated", event);
-      if (event && event.gameInfo && event.gameInfo.isRunning) {
-        withOverlayWindow(function (windowId) {
-          overwolf.windows.restore(windowId);
-        });
-      }
     });
   }
 

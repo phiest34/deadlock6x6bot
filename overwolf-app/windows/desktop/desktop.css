@@ -102,3 +102,19 @@ p {
   padding: 20px;
   margin-bottom: 16px;
 }
+
+.debug-output {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--text);
+  background: rgba(6, 12, 20, 0.76);
+  border: 1px solid rgba(251, 191, 36, 0.12);
+  border-radius: 12px;
+  padding: 14px;
+  max-height: 240px;
+  overflow: auto;
+}
