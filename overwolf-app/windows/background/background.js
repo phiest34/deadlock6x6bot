@@ -22,7 +22,16 @@
       return;
     }
 
-    console.log("[deadbot]", message, data);
+    if (typeof data === "string") {
+      console.log("[deadbot]", message, data);
+      return;
+    }
+
+    try {
+      console.log("[deadbot]", message, JSON.stringify(data));
+    } catch (_error) {
+      console.log("[deadbot]", message, data);
+    }
   }
 
   function sendToOverlay(message) {
