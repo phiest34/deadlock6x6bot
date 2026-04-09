@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Deadbot Overlay</title>
+  <link rel="stylesheet" href="./overlay.css">
+</head>
+<body>
+  <main class="panel">
+    <div class="eyebrow">Deadbot Overlay</div>
+    <h1 id="player-hero">Waiting for match</h1>
+    <div class="meta">
+      <span id="phase">phase: unknown</span>
+      <span id="timer">00:00</span>
+    </div>
+    <div class="stats">
+      <div class="stat">
+        <span class="label">K / D / A</span>
+        <span id="kda" class="value">0 / 0 / 0</span>
+      </div>
+      <div class="stat">
+        <span class="label">Souls</span>
+        <span id="souls" class="value">0</span>
+      </div>
+      <div class="stat">
+        <span class="label">Team Score</span>
+        <span id="team-score" class="value">-</span>
+      </div>
+    </div>
+    <div id="status" class="status">No live match data yet.</div>
+  </main>
+  <script src="./overlay.js"></script>
+</body>
+</html>

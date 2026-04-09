@@ -1,0 +1,64 @@
+:root {
+  color-scheme: dark;
+  --bg: #07111d;
+  --surface: #101c2b;
+  --surface-2: #162436;
+  --line: rgba(251, 191, 36, 0.18);
+  --accent: #fbbf24;
+  --text: #eff6ff;
+  --muted: #93a7bf;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  background:
+    radial-gradient(circle at top left, rgba(251, 191, 36, 0.16), transparent 30%),
+    linear-gradient(180deg, #0a1420, var(--bg));
+  color: var(--text);
+  font-family: "Segoe UI", sans-serif;
+}
+
+.shell {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 48px 28px 80px;
+}
+
+.hero {
+  margin-bottom: 24px;
+}
+
+.eyebrow {
+  color: var(--accent);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+h1,
+h2,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  max-width: 720px;
+  font-size: 42px;
+  line-height: 1.02;
+  margin-bottom: 12px;
+}
+
+p {
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.card {
+  background: linear-gradient(180deg, var(--surface), var(--surface-2));
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 20px;
+  margin-bottom: 16px;
+}

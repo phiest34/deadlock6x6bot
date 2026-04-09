@@ -1,0 +1,87 @@
+:root {
+  color-scheme: dark;
+  --bg: rgba(9, 13, 21, 0.84);
+  --panel: rgba(18, 25, 39, 0.9);
+  --line: rgba(245, 158, 11, 0.28);
+  --accent: #f59e0b;
+  --text: #f8fafc;
+  --muted: #94a3b8;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  font-family: "Segoe UI", sans-serif;
+  color: var(--text);
+  background: transparent;
+}
+
+body {
+  padding: 12px;
+}
+
+.panel {
+  width: 272px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at top right, rgba(245, 158, 11, 0.22), transparent 34%),
+    linear-gradient(180deg, rgba(30, 41, 59, 0.96), var(--panel));
+  backdrop-filter: blur(8px);
+  padding: 14px 14px 12px;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.35);
+}
+
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+h1 {
+  margin: 8px 0 10px;
+  font-size: 24px;
+  line-height: 1.05;
+}
+
+.meta,
+.stats {
+  display: grid;
+  gap: 8px;
+}
+
+.meta {
+  grid-template-columns: 1fr auto;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.stats {
+  margin-top: 12px;
+}
+
+.stat {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--bg);
+}
+
+.label {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.value {
+  font-weight: 700;
+}
+
+.status {
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 12px;
+}
