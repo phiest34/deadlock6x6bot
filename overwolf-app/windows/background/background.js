@@ -27,6 +27,12 @@
   function sendToOverlay(message) {
     overwolf.windows.obtainDeclaredWindow("overlay", function (result) {
       if (!result.success || !result.window) {
+        log("Overlay window is unavailable", result);
+        return;
+      }
+
+      if (typeof result.window.postMessage !== "function") {
+        log("Overlay window postMessage API is unavailable", result.window);
         return;
       }
 
