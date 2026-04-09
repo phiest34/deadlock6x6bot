@@ -22,6 +22,7 @@
   "data": {
     "start_window": "background",
     "open_dev_tools": true,
+    "force_browser": "user",
     "developer": {
       "enable_auto_refresh": true,
       "reload_delay": 1200,
@@ -30,9 +31,32 @@
     "game_targeting": {
       "type": "dedicated",
       "game_ids": [
-        244821
+        24482
       ]
     },
+    "hotkeys": {
+      "toggle_overlay": {
+        "title": "Toggle Overlay",
+        "action-type": "custom",
+        "default": "Insert",
+        "passthrough": false
+      }
+    },
+    "launch_events": [
+      {
+        "event": "LaunchWithOverwolf",
+        "start_minimized": true
+      },
+      {
+        "event": "GameLaunch",
+        "event_data": {
+          "game_ids": [
+            24482
+          ]
+        },
+        "start_minimized": true
+      }
+    ],
     "windows": {
       "background": {
         "file": "windows/background/background.html",
@@ -75,12 +99,6 @@
     }
   },
   "game_events": [
-    244821
-  ],
-  "hotkeys": {
-    "toggle_overlay": {
-      "title": "Toggle Overlay",
-      "action-type": "custom"
-    }
-  }
+    24482
+  ]
 }
