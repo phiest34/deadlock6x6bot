@@ -8,7 +8,7 @@
     "minimum-overwolf-version": "0.250.0",
     "description": "Deadlock overlay and bridge client for Deadbot.",
     "dock_button_title": "Deadbot Overlay",
-    "icon": "assets/icon.svg"
+    "icon": "assets/icon.png"
   },
   "permissions": [
     "GameInfo",
