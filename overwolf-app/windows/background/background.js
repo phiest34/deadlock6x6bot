@@ -135,6 +135,14 @@
   }
 
   function registerHotkey() {
+    if (
+      !overwolf.settings ||
+      typeof overwolf.settings.registerHotKey !== "function"
+    ) {
+      log("Hotkey API is unavailable in this runtime");
+      return;
+    }
+
     overwolf.settings.registerHotKey("toggle_overlay", function () {
       withOverlayWindow(function (windowId) {
         overwolf.windows.getWindowState(windowId, function (stateResult) {

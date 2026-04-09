@@ -20,6 +20,46 @@ body {
   font-family: "Segoe UI", sans-serif;
 }
 
+.titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line);
+  background: rgba(5, 10, 16, 0.78);
+  user-select: none;
+}
+
+.titlebar__label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.titlebar__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.titlebar__button {
+  width: 34px;
+  height: 30px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: rgba(16, 28, 43, 0.9);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.titlebar__button:hover {
+  border-color: rgba(251, 191, 36, 0.45);
+  background: rgba(23, 37, 56, 0.98);
+}
+
 .shell {
   max-width: 960px;
   margin: 0 auto;
