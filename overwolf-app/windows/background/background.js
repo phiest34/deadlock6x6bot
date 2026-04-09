@@ -3,6 +3,7 @@
 
   var REQUIRED_FEATURES = ["game_info", "match_info"];
   var BRIDGE_BASE_URL = "http://127.0.0.1:8765";
+  var GAME_INFO_POLL_INTERVAL_MS = 5000;
   var state = {
     phase: null,
     gameMode: null,
@@ -172,6 +173,17 @@
     });
   }
 
+  function pollRunningGameInfo() {
+    if (!overwolf.games || typeof overwolf.games.getRunningGameInfo !== "function") {
+      log("getRunningGameInfo API is unavailable in this runtime");
+      return;
+    }
+
+    overwolf.games.getRunningGameInfo(function (result) {
+      log("Running game info", result);
+    });
+  }
+
   function registerListeners() {
     overwolf.games.events.onInfoUpdates2.addListener(function (event) {
       log("Info update", event);
@@ -204,6 +216,8 @@
     restoreDeclaredWindow("desktop");
     registerHotkey();
     registerListeners();
+    pollRunningGameInfo();
+    window.setInterval(pollRunningGameInfo, GAME_INFO_POLL_INTERVAL_MS);
     requestFeatures();
     emitSnapshot();
   }
