@@ -90,28 +90,85 @@ Overwolf-приложение не должно знать детали `Telegra
 ## Current Status
 
 - базовый каркас `Overwolf Native` app уже создан в `overwolf-app/`
-- локальный `Python bridge` уже создан в `bridge/server.py`
+- локальный `Python bridge` уже создан:
+  - HTTP-сервер в `bridge/server.py`
+  - capture session storage в `bridge/capture_session.py`
 - базовый путь `Overwolf -> localhost bridge -> bot` подготовлен
 - инструкция локального запуска на `Windows` записана в `docs/windows-overwolf-local-run.md`
+- `Overwolf developer whitelist` для аккаунта `@nur-14` уже получен
+- приложение уже успешно запускается в `Overwolf`
+- подтверждено, что `Overwolf` видит `Deadlock` как running game
+- подтверждены значения:
+  - `id = 244821`
+  - `classId = 24482`
+- в `manifest` для `game_targeting` и `game_events` нужно использовать `classId = 24482`
+- `desktop` переведен в режим debug panel и теперь показывает состояние из `background` без зависимости от `overlay`
+- `overlay` временно выведен из critical path и больше не нужен для диагностики получения данных из игры
+- подтверждено, что `setRequiredFeatures(...)` успешно проходит для:
+  - `game_info`
+  - `match_info`
+- `Requested Features` сейчас возвращает:
+  - `success = true`
+  - `status = "success"`
+  - `supportedFeatures = ["game_info", "match_info"]`
+- добавлен retry-механизм повторной подписки на `GEP features` после attach к игре
+- подтверждено, что базовая интеграция `Overwolf -> Deadlock` работает на уровне:
+  - app launch
+  - game detection
+  - feature subscription
 
 ## External Dependency
 
-На текущем этапе есть внешний блокер:
+На текущем этапе внешний блокер по `developer access` снят.
 
-- заявка на `Overwolf developer access / developer whitelist` уже отправлена для аккаунта `@nur-14`
-- ожидаемое время ожидания ответа: до `2` дней
-- до одобрения аккаунта нельзя надежно пройти `Phase 0`, потому что `Overwolf` не дает загрузить `unpacked extension` и показывает `Unauthorized App / unauthorized source`
+Оставшийся внешний риск:
+
+- неизвестно, какие именно `Deadlock GEP` payloads реально приходят в живом матче и как это зависит от режима игры
+- нужно эмпирически подтвердить `Info Update` и `New Events` в полноценной матчевой сессии
+- остается открытым вопрос, отдает ли `Street Brawl`, матчи с ботами и другие нестандартные режимы тот же набор `GEP`-данных, что и обычный матч
 
 ## Active Blocker
 
-`Phase 0` частично заблокирован до получения `developer access` от `Overwolf`.
+Текущий blocker сместился с запуска app на capture реальных live-payloads из `Deadlock`.
 
-Что можно делать параллельно, пока идет ожидание:
+Что можно делать параллельно:
 
 - дорабатывать `bridge`
 - готовить bot ingestion
-- улучшать UI overlay
-- фиксировать manifest/runtime issues, не требующие запуска в `Overwolf`
+- улучшать debug panel
+- фиксировать `payload normalization`
+- откладывать полноценный `overlay UI` до подтверждения состава live-данных
+
+## Current Stage
+
+Текущий этап проекта:
+
+- `Phase 0` частично пройдена
+- базовая интеграция с `Overwolf` подтверждена
+- сейчас идет этап capture и анализа реальных `GEP payloads`
+
+Что уже подтверждено:
+
+- приложение запускается
+- `Deadlock` детектится как running game
+- `Overwolf` видит:
+  - `id = 244821`
+  - `classId = 24482`
+- feature subscription работает
+
+Что еще не подтверждено:
+
+- реальный payload `Info Update`
+- реальный payload `New Events`
+- состав live-метрик в обычном матчевом режиме
+- зависимость payloads от конкретного игрового режима
+
+Следующий целевой checkpoint:
+
+- получить и сохранить в `desktop debug panel` первый валидный `Info Update`
+- получить и сохранить первый валидный `New Events`
+- сохранить первую полную файловую capture-сессию в `docs/overwolf-testdata/raw-payloads/`
+- на основе этого зафиксировать минимальный стабильный контракт данных для `MVP`
 
 ## Development Phases
 
@@ -124,12 +181,14 @@ Overwolf-приложение не должно знать детали `Telegra
 ### Tasks
 
 - создать минимальное `Overwolf` test app
-- дождаться `Overwolf developer whitelist` для аккаунта `@nur-14`
+- подтвердить capture real-time payloads на живой матчевой сессии
 - подписаться на:
   - `game_info`
   - `match_info`
   - live events
-- логировать все raw payloads в dev console и в локальный файл
+- логировать все raw payloads в `background`
+- сохранять все raw payloads через `bridge/capture_session.py` в файловую capture-сессию
+- показывать последние payloads в `desktop` debug panel без зависимости от `overlay`
 - проверить на реальном матче:
   - `steam_id`
   - `hero_name` или `hero_id`
@@ -143,6 +202,8 @@ Overwolf-приложение не должно знать детали `Telegra
 
 ### Exit Criteria
 
+- подтверждено, что `Deadlock` детектится через `Overwolf` и app получает `game context`
+- подтверждено, что `setRequiredFeatures(...)` успешно активирует `game_info` и `match_info`
 - есть подтвержденный пример реальных payloads
 - понятен стабильный набор полей для `MVP`
 - зафиксированы missing fields и ограничения
@@ -190,17 +251,20 @@ Overwolf-приложение не должно знать детали `Telegra
   - `POST /events`
   - `POST /snapshot`
   - `GET /health`
+  - `GET /capture/status`
+  - `POST /capture/*`
 - добавить:
   - валидацию payload
   - логирование
   - простую буферизацию
-  - deduplication
+  - файловый capture storage для ручных тестовых сессий
 - хранить последние события по активному матчу
 
 ### Exit Criteria
 
 - overlay может отправлять события локально
 - сервис переживает перезапуск окна overlay
+- capture-сессия сохраняется в `docs/overwolf-testdata/raw-payloads/`
 - последние события доступны для отладки
 
 ## Phase 3. MVP Overlay UI

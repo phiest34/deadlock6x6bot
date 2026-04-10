@@ -112,6 +112,6 @@
       setStatus("Bridge is healthy. Stored events: " + payload.events_received);
     })
     .catch(function () {
-      setStatus("Bridge is offline. Start bridge/server.py before testing.");
+      setStatus("Bridge is offline. Start bridge/server.py before testing capture flows.");
     });
 })();

@@ -96,6 +96,10 @@
     });
   }
 
+  function captureRaw(path, payload) {
+    postJson("/capture/" + path, payload);
+  }
+
   function restoreDeclaredWindow(name) {
     overwolf.windows.obtainDeclaredWindow(name, function (result) {
       if (!result.success || !result.window) {
@@ -200,6 +204,7 @@
     overwolf.games.events.setRequiredFeatures(REQUIRED_FEATURES, function (result) {
       window.deadbotDebugState.requestedFeatures = result;
       window.deadbotDebugState.updatedAt = new Date().toISOString();
+      captureRaw("set-required-features", result);
       log("Requested features", result);
     });
   }
@@ -232,6 +237,7 @@
     overwolf.games.getRunningGameInfo(function (result) {
       window.deadbotDebugState.runningGameInfo = result;
       window.deadbotDebugState.updatedAt = new Date().toISOString();
+      captureRaw("running-game-info", result);
       log("Running game info", result);
     });
   }
@@ -240,6 +246,7 @@
     overwolf.games.events.onInfoUpdates2.addListener(function (event) {
       window.deadbotDebugState.lastInfoUpdate = event;
       window.deadbotDebugState.updatedAt = new Date().toISOString();
+      captureRaw("info-updates", event);
       log("Info update", event);
       stopFeatureRetryLoop();
       applyInfoUpdates(event.info && event.info.update ? event.info.update : []);
@@ -248,6 +255,7 @@
     overwolf.games.events.onNewEvents.addListener(function (event) {
       window.deadbotDebugState.lastNewEvents = event;
       window.deadbotDebugState.updatedAt = new Date().toISOString();
+      captureRaw("new-events", event);
       log("New events", event);
 
       if (!event || !Array.isArray(event.events)) {

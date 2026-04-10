@@ -48,6 +48,14 @@ python bridge/server.py
 bridge listening on http://127.0.0.1:8765
 ```
 
+При старте `bridge/server.py` модуль [`bridge/capture_session.py`](/Users/moldataev.n/deadbot/bridge/capture_session.py#L1) автоматически создаст новую папку capture-сессии в:
+
+```text
+docs/overwolf-testdata/raw-payloads/<timestamp>_manual-run
+```
+
+Во время запуска `Overwolf` raw payloads будут складываться туда автоматически.
+
 Проверь health endpoint в браузере:
 
 ```text
@@ -59,6 +67,14 @@ http://127.0.0.1:8765/health
 ```json
 {"status":"ok","events_received":0,"last_snapshot_at":null,...}
 ```
+
+Для проверки capture-сессии отдельно можно открыть:
+
+```text
+http://127.0.0.1:8765/capture/status
+```
+
+Там вернутся `session_dir` и счетчики по каждому типу raw payload.
 
 ## 4. Install Overwolf
 
@@ -143,6 +159,7 @@ http://127.0.0.1:8765/health
 В `background` devtools проверь:
 
 - результат `setRequiredFeatures(...)`
+- результат `getRunningGameInfo(...)`
 - события из `onInfoUpdates2`
 - события из `onNewEvents`
 
@@ -160,19 +177,25 @@ http://127.0.0.1:8765/health
 - `souls`
 - `hero_name` или `hero_id`
 
-## 11. What To Send Back
+## 11. Saved Capture Files
 
-После первого теста пришли сюда:
+После прогона открой созданную bridge-сессию в:
 
-- raw output `setRequiredFeatures(...)`
-- 1-2 примера `onInfoUpdates2`
-- 1-2 примера `onNewEvents`
-- если были ошибки, их полный текст
+```text
+docs/overwolf-testdata/raw-payloads/<timestamp>_manual-run
+```
 
-Тогда я подправлю нормализацию в:
+Там будут лежать:
 
-- [background.js](/Users/moldataev.n/deadbot/overwolf-app/windows/background/background.js)
-- [deadlock-events.js](/Users/moldataev.n/deadbot/overwolf-app/lib/deadlock-events.js)
+- `set-required-features.json`
+- `running-game-info.json`
+- `info-updates.json`
+- `new-events.json`
+- `notes.md`
+
+Если хочешь быстро проверить, что записи действительно шли в нужную сессию, сравни содержимое папки с ответом `GET /capture/status`.
+
+Заполни `notes.md` и дальше можно разбирать payloads уже из этих файлов.
 
 ## 12. Known Caveats
 

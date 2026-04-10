@@ -6,6 +6,8 @@ from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from typing import Any, Deque, Dict, Optional
 
+from capture_session import CAPTURE_KIND_BY_PATH, CAPTURE_SESSION
+
 
 LOGGER = logging.getLogger("deadbot.bridge")
 EVENTS: Deque[Dict[str, Any]] = deque(maxlen=200)
@@ -23,22 +25,27 @@ class BridgeHandler(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self) -> None:
-        if self.path != "/health":
-            self._send_json(HTTPStatus.NOT_FOUND, {"error": "not_found"})
+        if self.path == "/health":
+            self._send_json(
+                HTTPStatus.OK,
+                {
+                    "status": "ok",
+                    "events_received": len(EVENTS),
+                    "last_snapshot_at": SNAPSHOT.get("updatedAt"),
+                    "capture": CAPTURE_SESSION.status(),
+                    "server_time": datetime.now(timezone.utc).isoformat(),
+                },
+            )
             return
 
-        self._send_json(
-            HTTPStatus.OK,
-            {
-                "status": "ok",
-                "events_received": len(EVENTS),
-                "last_snapshot_at": SNAPSHOT.get("updatedAt"),
-                "server_time": datetime.now(timezone.utc).isoformat(),
-            },
-        )
+        if self.path == "/capture/status":
+            self._send_json(HTTPStatus.OK, CAPTURE_SESSION.status())
+            return
+
+        self._send_json(HTTPStatus.NOT_FOUND, {"error": "not_found"})
 
     def do_POST(self) -> None:
-        if self.path not in {"/events", "/snapshot"}:
+        if self.path not in {"/events", "/snapshot", *CAPTURE_KIND_BY_PATH.keys()}:
             self._send_json(HTTPStatus.NOT_FOUND, {"error": "not_found"})
             return
 
@@ -53,9 +60,16 @@ class BridgeHandler(BaseHTTPRequestHandler):
             self._send_json(HTTPStatus.ACCEPTED, {"status": "accepted"})
             return
 
-        SNAPSHOT.clear()
-        SNAPSHOT.update(body)
-        LOGGER.info("updated snapshot for steam_id=%s", body.get("steamId"))
+        if self.path == "/snapshot":
+            SNAPSHOT.clear()
+            SNAPSHOT.update(body)
+            LOGGER.info("updated snapshot for steam_id=%s", body.get("steamId"))
+            self._send_json(HTTPStatus.ACCEPTED, {"status": "accepted"})
+            return
+
+        capture_kind = CAPTURE_KIND_BY_PATH[self.path]
+        CAPTURE_SESSION.append(capture_kind, body)
+        LOGGER.info("captured raw payload: %s", capture_kind)
         self._send_json(HTTPStatus.ACCEPTED, {"status": "accepted"})
 
     def log_message(self, format: str, *args: Any) -> None:
